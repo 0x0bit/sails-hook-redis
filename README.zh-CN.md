@@ -1,9 +1,5 @@
 # Sails Redis 通用连接钩子 (sails-hook-redis)
 
-[![NPM version](https://img.shields.io/npm/v/sails-hook-redis.svg?style=flat)](https://www.npmjs.com/package/sails-hook-redis)
-[![NPM Downloads](https://img.shields.io/npm/dm/sails-hook-redis.svg?style=flat)](https://www.npmjs.com/package/sails-hook-redis)
-[![License](https://img.shields.io/npm/l/sails-hook-redis.svg?style=flat)](https://opensource.org/licenses/MIT)
-
 一个为 [Sails.js](https://sailsjs.com) 设计的通用Redis连接钩子。它能够以一致的方式连接到 **单机（Standalone）**、**哨兵（Sentinel）** 或 **集群（Cluster）** 模式的Redis，并将功能强大的 `ioredis` 客户端实例暴露为全局的 `sails.hooks.redis` 对象。
 
 ## ✨ 主要特性

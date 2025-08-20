@@ -1,9 +1,5 @@
 # Sails Redis Universal Hook (sails-hook-redis)
 
-[![NPM version](https://img.shields.io/npm/v/sails-hook-redis.svg?style=flat)](https://www.npmjs.com/package/sails-hook-redis)
-[![NPM Downloads](https://img.shields.io/npm/dm/sails-hook-redis.svg?style=flat)](https://www.npmjs.com/package/sails-hook-redis)
-[![License](https://img.shields.io/npm/l/sails-hook-redis.svg?style=flat)](https://opensource.org/licenses/MIT)
-
 > English | [简体中文](./README.zh-CN.md)
 
 A universal Redis connection hook for [Sails.js](https://sailsjs.com). It provides a consistent way to connect to Redis in **Standalone**, **Sentinel**, or **Cluster** mode and exposes the powerful `ioredis` client instance as the global `sails.hooks.redis` object.
