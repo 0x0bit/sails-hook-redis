@@ -1,5 +1,5 @@
 {
-  "name": "sails-hook-redis",
+  "name": "@0x0bit/sails-hook-redis",
   "version": "0.1.0",
   "description": "sail ",
   "main": "src/index.js",
@@ -25,7 +25,7 @@
     "type": "git",
     "url": "https://github.com/0x0bit/sails-hook-redis.git"
   },
-  
+
   "homepage": "https://github.com/0x0bit/sails-hook-redis#readme",
 
   "license": "MIT",
