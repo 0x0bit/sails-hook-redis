@@ -1,5 +1,5 @@
 {
-  "name": "@0x0bit/sails-hook-redis",
+  "name": "@0x01bit/sails-hook-redis",
   "version": "0.1.0",
   "description": "sail ",
   "main": "src/index.js",

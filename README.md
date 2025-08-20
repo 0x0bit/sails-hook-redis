@@ -1,60 +1,62 @@
-# Sails Redis 通用连接钩子 (sails-hook-redis)
+# Sails Redis Universal Hook (sails-hook-redis)
 
 [![NPM version](https://img.shields.io/npm/v/sails-hook-redis.svg?style=flat)](https://www.npmjs.com/package/sails-hook-redis)
 [![NPM Downloads](https://img.shields.io/npm/dm/sails-hook-redis.svg?style=flat)](https://www.npmjs.com/package/sails-hook-redis)
 [![License](https://img.shields.io/npm/l/sails-hook-redis.svg?style=flat)](https://opensource.org/licenses/MIT)
 
-一个为 [Sails.js](https://sailsjs.com) 设计的通用Redis连接钩子。它能够以一致的方式连接到 **单机（Standalone）**、**哨兵（Sentinel）** 或 **集群（Cluster）** 模式的Redis，并将功能强大的 `ioredis` 客户端实例暴露为全局的 `sails.redis` 对象。
+> English | [简体中文](./README.zh-CN.md)
 
-## ✨ 主要特性
+A universal Redis connection hook for [Sails.js](https://sailsjs.com). It provides a consistent way to connect to Redis in **Standalone**, **Sentinel**, or **Cluster** mode and exposes the powerful `ioredis` client instance as the global `sails.redis` object.
 
--   **统一的API**：在应用的任何地方，始终通过 `sails.redis` 访问Redis，无需关心底层连接的是哪种模式。
--   **智能模式识别**：只需提供配置，钩子会自动检测并以正确的模式（单机、哨兵或集群）进行初始化。
--   **功能强大**：基于性能卓越的 `ioredis` 库，支持所有Redis命令、Lua脚本、事务（Pipeline）等高级功能。
--   **生命周期管理**：遵循Sails的生命周期，在应用启动时自动连接，在应用关闭时安全地断开连接。
--   **配置简单**：提供清晰、直观的配置文件，轻松上手。
+## ✨ Features
 
-## 🚀 安装
+-   **Unified API**: Always access Redis through `sails.redis` anywhere in your app, regardless of the underlying connection mode.
+-   **Smart Mode Detection**: The hook automatically detects and initializes the correct connection mode (Standalone, Sentinel, or Cluster) based on your configuration.
+-   **Powerful & Performant**: Built on top of the excellent `ioredis` library, it supports all Redis commands, Lua scripts, pipelines, and more.
+-   **Lifecycle Management**: Follows the Sails lifecycle to automatically connect on startup and safely disconnect on shutdown.
+-   **Simple Configuration**: Get started quickly with a clear and intuitive configuration file.
 
-在您的Sails项目根目录下执行：
+## 🚀 Installation
+
+In the root directory of your Sails project, run:
 
 ```bash
-npm install sails-hook-redis --save
+npm install @0x0bit/sails-hook-redis --save
 ```
 
-安装完成后，Sails会在启动时自动加载此钩子。
+After installation, Sails will automatically load the hook on startup.
 
-## ⚙️ 配置
+## ⚙️ Configuration
 
-在您的 Sails 项目的 `config/` 目录下创建一个名为 `redis.js` 的文件。钩子会根据此文件中的配置自动选择连接模式。
+Create a file named `redis.js` in your Sails project's `config/` directory. The hook will automatically select the connection mode based on the configuration you provide in this file.
 
 ---
 
-### 示例 1：单机模式 (Standalone)
+### Example 1: Standalone Mode
 
-这是最基础的连接方式，适用于连接单个Redis实例。
+This is the most basic setup, used for connecting to a single Redis instance.
 
 ```javascript
 // config/redis.js
 
 module.exports.redis = {
-  // 默认为 true 来启用此钩子，如果想要禁用该hook，只需要设置为false
+  // Must be set to true to enable this hook
   enabled: true,
 
-  // 提供 host 和 port
+  // Provide host and port
   host: '127.0.0.1',
   port: 6379,
 
-  // 或者，您也可以直接提供一个 URL
+  // Alternatively, you can provide a connection URL
   // url: 'redis://user:password@hostname:port/db_number',
 
-  password: 'your-redis-password', // 如果有密码
-  db: 0, // 数据库编号
+  password: 'your-redis-password', // If authentication is required
+  db: 0, // Database number
 
-  // 在这里可以传入任何 ioredis 支持的额外选项
-  // 更多选项请参考: https://github.com/luin/ioredis/blob/main/API.md#new-redisport-host-options
+  // You can pass any other ioredis supported options here
+  // See: [https://github.com/luin/ioredis/blob/main/API.md#new-redisport-host-options](https://github.com/luin/ioredis/blob/main/API.md#new-redisport-host-options)
   options: {
-    // 例如，为所有 key 添加统一的前缀
+    // For example, add a prefix to all keys
     // keyPrefix: 'myapp:'
   }
 };
@@ -62,9 +64,9 @@ module.exports.redis = {
 
 ---
 
-### 示例 2：哨兵模式 (Sentinel)
+### Example 2: Sentinel Mode
 
-适用于连接到由Sentinel保障高可用的Redis主从集群。
+Use this mode to connect to a high-availability Redis master-slave setup managed by Sentinel.
 
 ```javascript
 // config/redis.js
@@ -72,28 +74,28 @@ module.exports.redis = {
 module.exports.redis = {
   enabled: true,
 
-  // 提供所有哨兵节点的地址列表
+  // Provide a list of all your sentinel nodes
   sentinels: [
     { host: '10.0.0.1', port: 26379 },
     { host: '10.0.0.2', port: 26379 },
     { host: '10.0.0.3', port: 26379 },
   ],
 
-  // 指定在 sentinel.conf 中配置的主节点组名 (master group name)
+  // Specify the master group name defined in your sentinel.conf
   name: 'mymaster',
 
-  password: 'your-redis-password', // 如果有密码
+  password: 'your-redis-password', // If authentication is required
   db: 0,
 };
 ```
 
 ---
 
-### 示例 3：集群模式 (Cluster)
+### Example 3: Cluster Mode
 
-适用于连接到官方的Redis Cluster集群。
+Use this mode to connect to an official Redis Cluster deployment.
 
-**备注**：Redis Cluster模式不支持 `db` 数据库选择的概念。
+**Note**: The concept of database selection (`db`) is not supported in Redis Cluster mode.
 
 ```javascript
 // config/redis.js
@@ -101,69 +103,69 @@ module.exports.redis = {
 module.exports.redis = {
   enabled: true,
 
-  // 提供集群中部分或全部节点的地址列表
+  // Provide a list of some or all nodes in your cluster
   clusterNodes: [
     { host: '10.0.1.1', port: 7000 },
     { host: '10.0.1.2', port: 7001 },
     { host: '10.0.1.3', port: 7002 },
-    // ...更多节点
+    // ...more nodes
   ],
 
-  // 密码将应用于集群中的所有节点
+  // The password will be applied to all nodes in the cluster
   password: 'your-cluster-password',
 
-  // ioredis 集群模式的额外选项
-  // 更多选项请参考: https://github.com/luin/ioredis/blob/main/API.md#new-clusterstartupnodes-options
+  // Additional ioredis cluster options can be passed here
+  // See: [https://github.com/luin/ioredis/blob/main/API.md#new-clusterstartupnodes-options](https://github.com/luin/ioredis/blob/main/API.md#new-clusterstartupnodes-options)
   options: {
-    // 例如，启用从节点读取
+    // For example, enable reading from slave nodes
     // scaleReads: 'slave'
   }
 };
 ```
 
-## 📝 使用方法
+## 📝 Usage
 
-配置完成后，Sails启动时会自动建立连接。您可以在应用的任何位置（控制器、服务、模型等）通过全局的 `sails.redis` 对象来调用所有Redis命令。
+Once configured, Sails will establish the connection on startup. You can then access the Redis client instance via the global `sails.redis` object anywhere in your application (controllers, services, models, etc.).
 
-所有命令均为异步，并返回Promise，建议与 `async/await` 配合使用。
+All commands are asynchronous and return Promises, making them ideal for use with `async/await`.
 
-**控制器示例 (`api/controllers/UserController.js`):**
+**Controller Example (`api/controllers/UserController.js`):**
 
 ```javascript
 module.exports = {
   /**
-   * 获取用户资料，优先从缓存读取
+   * Get user profile, fetching from cache first
    */
   async getProfile(req, res) {
     const userId = req.param('id');
     const cacheKey = `user:profile:${userId}`;
 
     try {
-      // 1. 尝试从Redis缓存中获取数据
+      // 1. Try to get data from Redis cache
       let cachedProfile = await sails.redis.get(cacheKey);
 
       if (cachedProfile) {
-        sails.log.info(`用户 ${userId} 的资料从缓存中命中。`);
-        // 将JSON字符串解析回对象并返回
+        sails.log.info(`Cache hit for user ${userId}.`);
+        // Parse the JSON string back into an object and return it
         return res.json(JSON.parse(cachedProfile));
       }
 
-      // 2. 如果缓存未命中，从数据库查询
-      sails.log.info(`用户 ${userId} 的资料缓存未命中，从数据库查询。`);
+      // 2. If cache miss, query the database
+      sails.log.info(`Cache miss for user ${userId}. Fetching from database.`);
       const user = await User.findOne({ id: userId });
 
       if (!user) {
         return res.notFound();
       }
 
-      // 3. 将数据存入Redis，并设置1小时的过期时间（3600秒）
-      // 注意：存入对象前需要先将其序列化为字符串
+      // 3. Store the result in Redis with a 1-hour expiration (3600 seconds)
+      // Note: Objects must be serialized to a string before storing
       await sails.redis.set(cacheKey, JSON.stringify(user), 'EX', 3600);
 
       return res.json(user);
 
     } catch (err) {
-      sails.log.error('获取用户资料时出错:', err);
+      sails.log.error('Error getting user profile:', err);
       return res.serverError(err);
     }
   }
@@ -172,4 +174,8 @@ module.exports = {
 
 ## 📚 API
 
-`sails.redis` 对象是一个完整的 `ioredis` 客户端实例。关于所有可用的Redis命令和方法，请直接参考官方的 [ioredis API 文档](https://github.com/luin/ioredis/blob/main/API.md)。
+The `sails.redis` object is a full `ioredis` client instance. For a complete list of all available Redis commands and methods, please refer to the official [ioredis API documentation](https://github.com/luin/ioredis/blob/main/API.md).
+
+## 📄 License
+
+This project is licensed under the [MIT](https://opensource.org/licenses/MIT) License.
