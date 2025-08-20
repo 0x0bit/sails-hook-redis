@@ -34,7 +34,7 @@ module.exports = function defineRedisHook(sails) {
           sails.log.info('`sails-hook-redis`: Initializing in CLUSTER mode.');
           // Redis.Cluster 构造函数接收一个节点数组和可选的options
           // 注意：集群模式不支持 `db` 选项
-          redisClient = new Redis.Cluster(config.clusterNodes, {
+          client = new Redis.Cluster(config.clusterNodes, {
             redisOptions: {
               password: config.password,
               ...config.options,
@@ -43,7 +43,7 @@ module.exports = function defineRedisHook(sails) {
         } else if (config.sentinels && Array.isArray(config.sentinels) && config.sentinels.length > 0 && config.name) {
           // --- 哨兵模式 ---
           sails.log.info('`sails-hook-redis`: Initializing in SENTINEL mode.');
-          redisClient = new Redis({
+          client = new Redis({
             sentinels: config.sentinels,
             name: config.name,
             password: config.password,
@@ -56,9 +56,9 @@ module.exports = function defineRedisHook(sails) {
           sails.log.info('`sails-hook-redis`: Initializing in STANDALONE mode.');
           // 单机模式支持 URL 或 host/port 对象
           if (config.url) {
-            redisClient = new Redis(config.url, config.options);
+            client = new Redis(config.url, config.options);
           } else {
-            redisClient = new Redis({
+            client = new Redis({
               host: config.host,
               port: config.port,
               password: config.password,
@@ -69,21 +69,21 @@ module.exports = function defineRedisHook(sails) {
         }
 
         // --- 通用逻辑 (事件监听、全局暴露、优雅关闭) ---
-        redisClient.on('connect', () => {
+        client.on('connect', () => {
           sails.log.info('✅ `sails-hook-redis`: Successfully connected to Redis.');
         });
 
-        redisClient.on('error', (err) => {
+        client.on('error', (err) => {
           // 集群模式可能会在启动时报告无法连接到某些节点，这可能是正常的
           sails.log.error('`sails-hook-redis`: Redis client error:', err.message);
         });
 
         // 暴露客户端实例
-        sails.redis = redisClient;
+        sails.redis = client;
 
         // 优雅关闭
         sails.on('lower', () => {
-          sails.log.info('`sails-hookl-redis`: Disconnecting from Redis due to Sails shutdown...');
+          sails.log.info('`sails-hook-redis`: Disconnecting from Redis due to Sails shutdown...');
           if (sails.redis) {
             // disconnect() 对集群和单机模式都有效
             sails.redis.disconnect();
