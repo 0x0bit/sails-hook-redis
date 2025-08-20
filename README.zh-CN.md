@@ -38,8 +38,8 @@ npm install @0x0bit/sails-hook-redis --save
 // config/redis.js
 
 module.exports.redis = {
-  // 默认为 true 来启用此钩子，如果想要禁用该hook，只需要设置为false
-  enabled: true,
+  // 默认为 false 来启用此钩子，如果想要禁用该hook，只需要设置为true
+  disabled: false,
 
   // 提供 host 和 port
   host: '127.0.0.1',

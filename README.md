@@ -40,8 +40,8 @@ This is the most basic setup, used for connecting to a single Redis instance.
 // config/redis.js
 
 module.exports.redis = {
-  // Must be set to true to enable this hook
-  enabled: true,
+  // Must be set to false to enable this hook
+  disabled: false,
 
   // Provide host and port
   host: '127.0.0.1',

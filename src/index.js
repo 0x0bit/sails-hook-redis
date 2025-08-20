@@ -8,7 +8,7 @@ module.exports = function defineRedisHook(sails) {
     
     defaults: {
       universalRedis: {
-        enabled: true,
+        disabled: false,
         // 为所有模式提供默认值
         host: '127.0.0.1',
         port: 6379,
@@ -23,7 +23,7 @@ module.exports = function defineRedisHook(sails) {
 
       const config = sails.config[this.identity];
       
-      if (!config.enabled) {
+      if (config.disabled) {
         sails.log.info('`sails-hook-redis` is disabled in config.');
         return;
       }
