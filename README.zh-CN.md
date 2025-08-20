@@ -4,11 +4,11 @@
 [![NPM Downloads](https://img.shields.io/npm/dm/sails-hook-redis.svg?style=flat)](https://www.npmjs.com/package/sails-hook-redis)
 [![License](https://img.shields.io/npm/l/sails-hook-redis.svg?style=flat)](https://opensource.org/licenses/MIT)
 
-一个为 [Sails.js](https://sailsjs.com) 设计的通用Redis连接钩子。它能够以一致的方式连接到 **单机（Standalone）**、**哨兵（Sentinel）** 或 **集群（Cluster）** 模式的Redis，并将功能强大的 `ioredis` 客户端实例暴露为全局的 `sails.redis` 对象。
+一个为 [Sails.js](https://sailsjs.com) 设计的通用Redis连接钩子。它能够以一致的方式连接到 **单机（Standalone）**、**哨兵（Sentinel）** 或 **集群（Cluster）** 模式的Redis，并将功能强大的 `ioredis` 客户端实例暴露为全局的 `sails.hooks.redis` 对象。
 
 ## ✨ 主要特性
 
--   **统一的API**：在应用的任何地方，始终通过 `sails.redis` 访问Redis，无需关心底层连接的是哪种模式。
+-   **统一的API**：在应用的任何地方，始终通过 `sails.hooks.redis` 访问Redis，无需关心底层连接的是哪种模式。
 -   **智能模式识别**：只需提供配置，钩子会自动检测并以正确的模式（单机、哨兵或集群）进行初始化。
 -   **功能强大**：基于性能卓越的 `ioredis` 库，支持所有Redis命令、Lua脚本、事务（Pipeline）等高级功能。
 -   **生命周期管理**：遵循Sails的生命周期，在应用启动时自动连接，在应用关闭时安全地断开连接。
@@ -123,7 +123,7 @@ module.exports.redis = {
 
 ## 📝 使用方法
 
-配置完成后，Sails启动时会自动建立连接。您可以在应用的任何位置（控制器、服务、模型等）通过全局的 `sails.redis` 对象来调用所有Redis命令。
+配置完成后，Sails启动时会自动建立连接。您可以在应用的任何位置（控制器、服务、模型等）通过全局的 `sails.hooks.redis` 对象来调用所有Redis命令。
 
 所有命令均为异步，并返回Promise，建议与 `async/await` 配合使用。
 
@@ -140,7 +140,7 @@ module.exports = {
 
     try {
       // 1. 尝试从Redis缓存中获取数据
-      let cachedProfile = await sails.redis.get(cacheKey);
+      let cachedProfile = await sails.hooks.redis.get(cacheKey);
 
       if (cachedProfile) {
         sails.log.info(`用户 ${userId} 的资料从缓存中命中。`);
@@ -158,7 +158,7 @@ module.exports = {
 
       // 3. 将数据存入Redis，并设置1小时的过期时间（3600秒）
       // 注意：存入对象前需要先将其序列化为字符串
-      await sails.redis.set(cacheKey, JSON.stringify(user), 'EX', 3600);
+      await sails.hooks.redis.set(cacheKey, JSON.stringify(user), 'EX', 3600);
 
       return res.json(user);
 
@@ -172,4 +172,4 @@ module.exports = {
 
 ## 📚 API
 
-`sails.redis` 对象是一个完整的 `ioredis` 客户端实例。关于所有可用的Redis命令和方法，请直接参考官方的 [ioredis API 文档](https://github.com/luin/ioredis/blob/main/API.md)。
+`sails.hooks.redis` 对象是一个完整的 `ioredis` 客户端实例。关于所有可用的Redis命令和方法，请直接参考官方的 [ioredis API 文档](https://github.com/luin/ioredis/blob/main/API.md)。

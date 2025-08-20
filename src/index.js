@@ -79,7 +79,7 @@ module.exports = function defineRedisHook(sails) {
         });
 
         // 暴露客户端实例
-        sails.redis = client;
+        sails.hooks.redis = client;
 
         // 优雅关闭
         sails.on('lower', () => {
@@ -89,8 +89,6 @@ module.exports = function defineRedisHook(sails) {
             sails.redis.disconnect();
           }
         });
-
-        sails.log.info('`sails-hook-redis` loaded successfully.');
       } catch (error) {
         sails.log.error('`sails-hook-redis` failed to initialize:', err);
         throw err;

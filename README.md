@@ -6,11 +6,11 @@
 
 > English | [简体中文](./README.zh-CN.md)
 
-A universal Redis connection hook for [Sails.js](https://sailsjs.com). It provides a consistent way to connect to Redis in **Standalone**, **Sentinel**, or **Cluster** mode and exposes the powerful `ioredis` client instance as the global `sails.redis` object.
+A universal Redis connection hook for [Sails.js](https://sailsjs.com). It provides a consistent way to connect to Redis in **Standalone**, **Sentinel**, or **Cluster** mode and exposes the powerful `ioredis` client instance as the global `sails.hooks.redis` object.
 
 ## ✨ Features
 
--   **Unified API**: Always access Redis through `sails.redis` anywhere in your app, regardless of the underlying connection mode.
+-   **Unified API**: Always access Redis through `sails.hooks.redis` anywhere in your app, regardless of the underlying connection mode.
 -   **Smart Mode Detection**: The hook automatically detects and initializes the correct connection mode (Standalone, Sentinel, or Cluster) based on your configuration.
 -   **Powerful & Performant**: Built on top of the excellent `ioredis` library, it supports all Redis commands, Lua scripts, pipelines, and more.
 -   **Lifecycle Management**: Follows the Sails lifecycle to automatically connect on startup and safely disconnect on shutdown.
@@ -125,7 +125,7 @@ module.exports.redis = {
 
 ## 📝 Usage
 
-Once configured, Sails will establish the connection on startup. You can then access the Redis client instance via the global `sails.redis` object anywhere in your application (controllers, services, models, etc.).
+Once configured, Sails will establish the connection on startup. You can then access the Redis client instance via the global `sails.hooks.redis` object anywhere in your application (controllers, services, models, etc.).
 
 All commands are asynchronous and return Promises, making them ideal for use with `async/await`.
 
@@ -142,7 +142,7 @@ module.exports = {
 
     try {
       // 1. Try to get data from Redis cache
-      let cachedProfile = await sails.redis.get(cacheKey);
+      let cachedProfile = await sails.hooks.redis.get(cacheKey);
 
       if (cachedProfile) {
         sails.log.info(`Cache hit for user ${userId}.`);
@@ -160,7 +160,7 @@ module.exports = {
 
       // 3. Store the result in Redis with a 1-hour expiration (3600 seconds)
       // Note: Objects must be serialized to a string before storing
-      await sails.redis.set(cacheKey, JSON.stringify(user), 'EX', 3600);
+      await sails.hooks.redis.set(cacheKey, JSON.stringify(user), 'EX', 3600);
 
       return res.json(user);
 
@@ -174,7 +174,7 @@ module.exports = {
 
 ## 📚 API
 
-The `sails.redis` object is a full `ioredis` client instance. For a complete list of all available Redis commands and methods, please refer to the official [ioredis API documentation](https://github.com/luin/ioredis/blob/main/API.md).
+The `sails.hooks.redis` object is a full `ioredis` client instance. For a complete list of all available Redis commands and methods, please refer to the official [ioredis API documentation](https://github.com/luin/ioredis/blob/main/API.md).
 
 ## 📄 License
 
