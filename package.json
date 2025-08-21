@@ -1,17 +1,15 @@
 {
   "name": "@0x0bit/sails-hook-redis",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "sail ",
   "main": "src/index.js",
   "author": {
     "email": "cn6bo.y@gmail.com",
     "name": "bo.yang"
   },
-
   "sails": {
     "isHook": true
   },
-
   "keywords": [
     "sails",
     "hook",
@@ -20,16 +18,12 @@
   "files": [
     "src"
   ],
-
   "repository": {
     "type": "git",
     "url": "https://github.com/0x0bit/sails-hook-redis.git"
   },
-
   "homepage": "https://github.com/0x0bit/sails-hook-redis#readme",
-
   "license": "MIT",
-
   "dependencies": {
     "ioredis": "^5.1.0",
     "sails": "^1.2.4"
